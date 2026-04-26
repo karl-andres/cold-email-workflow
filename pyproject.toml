@@ -1,0 +1,76 @@
+[project]
+name = "cold-email-workflow"
+version = "0.1.0"
+description = "AI-powered cold email workflow with LangGraph"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    # LangChain ecosystem
+    "langchain>=0.3.0",
+    "langchain-anthropic>=0.3.0",
+    "langchain-ollama>=0.2.0",
+    "langchain-openai>=0.3.0",
+    "langsmith>=0.1.0",
+    # LangGraph
+    "langgraph>=0.2.0",
+    "langgraph-checkpoint-postgres>=2.0.0",
+    # Database
+    "psycopg[binary,pool]>=3.1.0",
+    "pgvector>=0.3.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "alembic>=1.13.0",
+    # Tools / APIs
+    "firecrawl-py>=1.0.0",
+    "httpx>=0.27.0",
+    "tenacity>=8.2.0",
+    # Fuzzy dedup
+    "rapidfuzz>=3.6.0",
+    # Config + validation
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.0",
+    "python-dotenv>=1.0.0",
+    # CLI
+    "rich>=13.7.0",
+    "typer>=0.12.0",
+    "langgraph-cli[inmem]>=0.4.24",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-mock>=3.12.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+    "black>=24.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "--cov=src --cov-report=term-missing -v"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "RUF"]
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+fail_under = 80
