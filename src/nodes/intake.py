@@ -19,10 +19,15 @@ Extract company and contact details from the user's message. Return a JSON objec
   "contact_name": string | null,
   "contact_role": string | null,
   "contact_linkedin_url": string | null,
+  "blog_url": string | null,
   "user_notes": string | null
 }
 
 For company_stage use one of: seed, pre_seed, series_a, series_b, or null.
+For blog_url: extract any explicit blog or news URL the user provides (e.g. "their blog is at acme.com/blog"). \
+  Do not infer a blog URL from the company domain.
+For user_notes: capture any additional context, observations, or instructions the user mentions that \
+  don't fit the other fields (e.g. "they're hiring ML engineers", "focus on their RAG work", "avoid mentioning X").
 Return only valid JSON, no explanation."""
 
 

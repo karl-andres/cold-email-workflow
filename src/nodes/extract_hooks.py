@@ -26,7 +26,9 @@ KEEP these hook types:
 - A stated belief about where their industry is going
 
 Write each hook in third person about the company. \
-Never fabricate a connection. Only extract what is explicitly stated in the research."""
+Never fabricate a connection. Only extract what is explicitly stated in the research. \
+If the provided research is thin, vague, or insufficient to extract specific factual hooks, \
+return an empty list rather than inferring or fabricating hooks."""
 
 _PROMPT = """\
 Extract 3-6 personalization hooks from the research below. Each hook must be a single sentence \
@@ -35,12 +37,12 @@ answering "why is this company's core technical problem interesting?" — NOT "w
 These hooks will be used to open or anchor a cold email. Return only a numbered list, nothing else.
 Write each hook as an observation ABOUT the company (e.g. "Chimoney is building X for Y").
 
-HOOK QUALITY EXAMPLES:
-BAD: "Chimoney released OTP on Payouts and User Achievement Badges in April 2024"
-BAD: "Chimoney participated in Hacktoberfest 2023"
-BAD: "Chimoney was featured in TechCrunch"
-GOOD: "Chimoney is building identity and wallet infrastructure for AI agents, treating them as first-class financial participants alongside humans"
-GOOD: "Chimoney wrote about the gap between global payment infrastructure and what AI agents actually need to transact autonomously"
+HOOK QUALITY EXAMPLES (these are illustrative formats only — never copy their content):
+BAD: "Acme released a new dashboard and added SSO in March 2024"
+BAD: "Acme sponsored a local hackathon"
+BAD: "Acme was named a Top 10 Startup by Forbes"
+GOOD: "Acme is rethinking how distributed teams share context across async workflows without losing the signal in the noise"
+GOOD: "Acme wrote about why existing observability tools break down when your system has more agents than humans reading the logs"
 
 LINKEDIN POSTS:
 {posts}
@@ -73,6 +75,13 @@ async def extract_hooks(state: AgentState) -> dict:
     blog_posts = state.get("blog_posts") or []
 
     if not posts and not site_text and not blog_posts:
+        return {"personalization_hooks": []}
+
+    # Gate: if content is too thin to ground real hooks, bail early rather than hallucinate
+    blog_has_content = any(
+        len(b.get("content", "")) > 100 for b in blog_posts
+    )
+    if not posts and len(site_text) < 300 and not blog_has_content:
         return {"personalization_hooks": []}
 
     if blog_posts:

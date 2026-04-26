@@ -20,10 +20,13 @@ async def _fetch_site(state: AgentState) -> str:
 
 
 async def _fetch_blog(state: AgentState) -> list[BlogPost]:
-    domain = state.get("company_domain") or ""
-    if not domain:
-        return []
-    blog_url = await discover_blog(domain)
+    # Prefer a manually supplied blog URL over auto-discovery
+    blog_url = state.get("blog_url") or None
+    if not blog_url:
+        domain = state.get("company_domain") or ""
+        if not domain:
+            return []
+        blog_url = await discover_blog(domain)
     if not blog_url:
         return []
     return await scrape_blog_posts(blog_url, max_posts=3)

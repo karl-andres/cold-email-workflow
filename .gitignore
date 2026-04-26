@@ -14,3 +14,9 @@ wheels/
 
 # LangGraph
 .langgraph_api/
+
+# misc
+agent-sessions/
+collect_sessions.sh
+parse-sessions.py
+sessions/

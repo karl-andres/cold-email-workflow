@@ -52,6 +52,7 @@ class AgentState(TypedDict):
     contact_recent_posts: list[Post] | None
 
     # ── Scraped content ──────────────────────────────────────
+    blog_url: str | None  # optional manual override — skips blog discovery
     website_summary: str | None
     blog_posts: list[BlogPost] | None
     personalization_hooks: list[str] | None  # 5–8 atomic hooks
